@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="#">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+    <meta name="author" content="#">
+    <title>Date and Time Options</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Lineawesome CSS -->
+    <link rel="stylesheet" href="assets/css/line-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/material.css">
+
+    <!-- Chart CSS -->
+    <link rel="stylesheet" href="assets/plugins/morris/morris.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+        <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input,
+        select,
+        button {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0px 10px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004080;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .option-button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: black;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .option-button:hover {
+            background-color: #004080;
+        }
+
+        #genereer {
+            background-color: #0056b3;
+        }
+
+        #submitBtn {
+            background-color: #0056b3;
+        }
+
+        #backBtn {
+            background-color: #0056b3;
+        }
+
+
+        /* Added styles for selected options */
+        .selected {
+            background-color: navy !important;
+        }
+
+        .styled-button {
+    background-color: #004080;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 0px 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.styled-button:hover {
+    background-color: #0056b3;
+}
+    </style>
+
+</head>
+
+<body>
+ 
+ <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        <div class="header">
+            <!-- /Logo -->
+        </div>
+
+    </div>
+    
+    <div class="container" id="propertySelection">
+        <h1>Maak, selecteer of verwijder een afspraak</h1>
+        <!-- Placeholder for the dropdown menu -->
+        <div id="propertyDropdown" style="margin-top: 20px;"></div>
+        <div style="display: flex; justify-content: center;">
+            <button id="selectPropertyBtn" onclick="selectProperty()">Selecteer deze afspraak</button>
+            <button id="newPropertyBtn" onclick="showNewPropertyForm()">Maak een afspraak aan</button>
+       <button id="deletePropertyBtn" onclick="showDeletePropertyForm()">Verwijder een afspraak</button>
+        </div>
+        <button class="styled-button">
+            <a href="options_table.php" style="text-decoration: none; color: inherit;">Kandidaat-huurders</a>
+        </button>
+    </div>
+
+
+            <div class="container" id="newPropertyForm" style="display: none;">
+                <h1>Nieuwe afspraak aanmaken</h1>
+                <form id="propertyForm" action="create_property.php" method="POST">
+                    <label for="address">Adres van de nieuwe afspraak:</label>
+                    <input type="text" id="address" name="address"><br>
+                    <button type="submit">Maak afspraak aan</button><button onclick="cancelDelete()">Terug</button><br>
+
+                </form>
+            </div>
+
+            <div class="container" id="optionsContainer" style="display: none;">
+                <h1>Selecteer een bezoekmoment</h1>
+                <!-- Hidden input field to store the selected propertyId -->
+                <input type="hidden" id="propertyId" name="propertyId">
+
+                <label for="optionDate">Kies een datum:</label>
+                <input type="date" id="optionDate" name="optionDate"><br>
+
+                <label for="time">Kies een moment:</label>
+                <input type="time" id="time" name="time"><br>
+
+                <label for="increment">Bezoekmomenten van 5 of 10 minuten</label>
+                <select id="increment" name="increment">
+                    <option value="5">5 Minuten</option>
+                    <option value="10">10 Minuten</option>
+                </select><br>
+
+                <label for="options">Aantal unieke opties:</label>
+                <input type="number" id="options" name="options" min="1" value="7"><br>
+
+                <button id="genereer" onclick="generateOptions()">Genereer Opties</button><br>
+                <div class="options-container" id="optionsList"></div>
+                <button id="submitBtn" style="margin-top: 25px;" onclick="submitOptions()">Verzend</button>
+                <!-- Back button -->
+                <button id="backBtn" style="margin-top: 25px;" onclick="goBack()">Terug</button>
+            </div>
+
+   <!-- Add this container for delete property form after the container with id="newPropertyForm" -->
+<div class="container" id="deletePropertyContainer" style="display: none;">
+    <h1>Selecteer een afspraak om te verwijderen</h1>
+    <div id="propertyDropdownForDelete" style="margin-top: 20px;"></div>
+    <button onclick="deleteProperty()">Bevestig Verwijdering</button>
+    <button onclick="cancelDelete()">Terug</button>
+    <p id="deleteSuccessMessage" style="color: green; display: none;">De afspraak is verwijderd.</p>
+</div>
+
+    <!-- jQuery -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="assets/plugins/morris/morris.min.js"></script>
+    <script src="assets/plugins/raphael/raphael.min.js"></script>
+    <script src="assets/js/chart.js"></script>
+    <script src="assets/js/greedynav.js"></script>
+
+    <!-- Theme Settings JS -->
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/theme-settings.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/app.js"></script>
+
+    <script>
+        // Global variable to store the selected property ID
+        var selectedPropertyId = null;
+
+        // Function to fetch properties from the server
+        function fetchProperties() {
+            fetch('fetch_properties.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Display the fetched properties
+                    displayProperties(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching properties:', error);
+                });
+        }
+
+        // Function to display the list of properties
+        function displayProperties(properties) {
+            var propertyDropdown = document.getElementById("propertyDropdown");
+            propertyDropdown.innerHTML = "<label for='propertySelect'>Kies een bestaande afspraak:</label>";
+            var select = document.createElement("select");
+            select.id = "propertySelect";
+            select.name = "propertySelect";
+            properties.forEach(function(property) {
+                var option = document.createElement("option");
+                option.value = property.id; // Assuming each property has an ID
+                option.text = property.address; // Assuming each property has an address
+                select.appendChild(option);
+            });
+            propertyDropdown.appendChild(select);
+        }
+
+        // Call the function to fetch properties on page load
+        window.onload = fetchProperties;
+
+        // Function to select a property
+        function selectProperty() {
+            selectedPropertyId = document.getElementById("propertySelect").value;
+            // Hide the property selection container
+            document.getElementById("propertySelection").style.display = "none";
+            // Show the options container
+            document.getElementById("optionsContainer").style.display = "block";
+        }
+
+        // Function to show the form for creating a new property
+        function showNewPropertyForm() {
+            document.getElementById("propertySelection").style.display = "none";
+            document.getElementById("newPropertyForm").style.display = "block";
+        }
+
+        // Function to generate options
+        function generateOptions() {
+            // Get the selected date, time, and increment values
+            var date = document.getElementById("optionDate").value;
+            var time = document.getElementById("time").value;
+            var increment = parseInt(document.getElementById("increment").value);
+
+            // Convert the selected time to hours and minutes
+            var timeParts = time.split(":");
+            var hours = parseInt(timeParts[0]);
+            var minutes = parseInt(timeParts[1]);
+
+            // Calculate the total number of minutes from the selected time
+            var totalMinutes = hours * 60 + minutes;
+
+            // Get the number of unique options to generate
+            var numOptions = parseInt(document.getElementById("options").value);
+
+            // Container to store the generated options
+            var optionsContainer = document.getElementById("optionsList");
+            optionsContainer.innerHTML = ""; // Clear previous options
+
+            // Generate and display the options
+            for (var i = 0; i < numOptions; i++) {
+                // Calculate the time for the current option
+                var optionTime = new Date(date);
+                optionTime.setHours(Math.floor(totalMinutes / 60)); // Set the hours part
+                optionTime.setMinutes(totalMinutes % 60); // Set the minutes part
+
+                // Format the time in HH:mm format
+                var formattedTime = ("0" + optionTime.getHours()).slice(-2) + ":" + ("0" + optionTime.getMinutes()).slice(-2);
+
+                // Create an option element
+                var optionElement = document.createElement("div");
+                optionElement.textContent = formattedTime;
+                optionElement.classList.add("option-button");
+
+                // Add click event listener to select/deselect options
+                optionElement.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+
+                // Append the option to the container
+                optionsContainer.appendChild(optionElement);
+
+                // Increment the total minutes by the selected increment
+                totalMinutes += increment;
+            }
+        }
+
+
+
+        // Function to submit options to the server
+        function submitOptions() {
+            // Get the selected date, time, and increment values
+            var date = document.getElementById("optionDate").value;
+            var time = document.getElementById("time").value;
+            var increment = parseInt(document.getElementById("increment").value);
+
+            // Get the number of unique options
+            var numOptions = parseInt(document.getElementById("options").value);
+
+            // Container to store the selected options
+            var selectedOptions = [];
+
+            // Get all selected options
+            var selectedOptionElements = document.querySelectorAll('.option-button.selected');
+            selectedOptionElements.forEach(function(element) {
+                selectedOptions.push(element.textContent);
+            });
+
+            // Prepare the data to send in the POST request
+            var formData = new FormData();
+            formData.append('propertyId', selectedPropertyId);
+            formData.append('date', date);
+            formData.append('time', time);
+            formData.append('increment', increment);
+            formData.append('options', JSON.stringify(selectedOptions));
+
+            // Send a POST request to the PHP script to insert options into the database
+            fetch('insert_options.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+            window.location.href = "success.html";
+        }
+
+        // Function to navigate back to the property selection container
+        function goBack() {
+            // Show the property selection container
+            document.getElementById("propertySelection").style.display = "block";
+            // Hide the options container
+            document.getElementById("optionsContainer").style.display = "none";
+        }
+
+
+
+
+
+// Global variable to store the selected property ID for deletion
+var selectedPropertyIdForDelete = null;
+
+// Function to fetch properties from the server for deletion
+function fetchPropertiesForDelete() {
+    fetch('fetch_properties.php')
+        .then(response => response.json())
+        .then(data => {
+            // Display the fetched properties in the delete property dropdown
+            displayPropertiesForDelete(data);
+        })
+        .catch(error => {
+            console.error('Error fetching properties for delete:', error);
+        });
+}
+
+// Function to display the list of properties for delete
+function displayPropertiesForDelete(properties) {
+    var propertyDropdownForDelete = document.getElementById("propertyDropdownForDelete");
+    propertyDropdownForDelete.innerHTML = "<label for='propertySelectForDelete'>Kies een afspraak om te verwijderen:</label>";
+    var select = document.createElement("select");
+    select.id = "propertySelectForDelete";
+    select.name = "propertySelectForDelete";
+    properties.forEach(function(property) {
+        var option = document.createElement("option");
+        option.value = property.id; // Assuming each property has an ID
+        option.text = property.address; // Assuming each property has an address
+        select.appendChild(option);
+    });
+    propertyDropdownForDelete.appendChild(select);
+}
+
+// Function to show the delete property form
+function showDeletePropertyForm() {
+    document.getElementById("propertySelection").style.display = "none";
+    document.getElementById("deletePropertyContainer").style.display = "block";
+    // Call function to fetch properties for delete
+    fetchPropertiesForDelete();
+}
+
+// Function to delete a property
+function deleteProperty() {
+    selectedPropertyIdForDelete = document.getElementById("propertySelectForDelete").value;
+    
+    // Prepare the data to send in the POST request
+    const formData = new FormData();
+    formData.append('delete_property', 1); // Set delete_property to 1
+    formData.append('propertyId', selectedPropertyIdForDelete);
+    
+    // Call the PHP file to delete the property
+    fetch('delete_property.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data); // Log the response from the server
+        // Display success message
+        document.getElementById("deleteSuccessMessage").style.display = "block";
+        // Reload the properties after deletion
+        fetchProperties();
+    })
+    .catch(error => {
+        console.error('Error deleting property:', error);
+        // Handle errors if needed
+    });
+}
+
+
+
+
+
+// Function to cancel delete operation
+function cancelDelete() {
+    document.getElementById("propertySelection").style.display = "block";
+    document.getElementById("deletePropertyContainer").style.display = "none";
+}
+
+    </script>
+
+</body>
+
+</html>
